@@ -10,6 +10,10 @@ import io.ktor.serialization.kotlinx.json.*
 import kotlinx.coroutines.runBlocking
 import kotlinx.serialization.json.Json
 import models.Photo
+import java.io.File
+import java.io.FileInputStream
+import java.util.*
+import kotlin.collections.ArrayList
 
 class ApiClient (engine: HttpClientEngine = CIO.create()) {
     private val client = HttpClient(engine) {
@@ -24,10 +28,15 @@ class ApiClient (engine: HttpClientEngine = CIO.create()) {
     }
 
     suspend fun getPhotos(albumId: Int): List<Photo?> {
+        var file = File("src/main/resources/application.properties")
+        val properties = Properties()
+        FileInputStream(file).use { properties.load(it) }
+        val photoUrl = properties.getProperty("photoUrl")
+
         val photoList: List<Photo?>
         runBlocking {
             val photos: ArrayList<Photo?> =
-                client.get("https://jsonplaceholder.typicode.com/photos?albumId=${albumId}").body()
+                client.get("${photoUrl}?albumId=${albumId}").body()
             photoList = photos.toList()
         }
         return photoList

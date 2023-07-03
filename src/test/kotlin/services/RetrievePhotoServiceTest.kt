@@ -38,7 +38,14 @@ class RetrievePhotoServiceTest {
             )
         )
 
-        val expectedResponse = listOf(Pair("[${photoList[0].id}]", "${photoList[0].title}\n"))
+        val pairList = listOf(Pair("[${photoList[0].id}]", "${photoList[0].title}\n"))
+
+        val expectedResponse = pairList.toString().replace("),", "")
+            .replace("(", "")
+            .replace("[[", "[")
+            .replace(")", "")
+            .replace("],", "]")
+            .replace("\n]", "")
 
         val mockApiClient = mockk<ApiClient>()
         val retrievePhotoService = RetrievePhotoService(mockApiClient)
@@ -47,6 +54,6 @@ class RetrievePhotoServiceTest {
 
         val result = retrievePhotoService.getPhotos(randomAlbumId)
 
-        assertEquals(expectedResponse.toString(), result)
+        assertEquals(expectedResponse, result)
     }
 }
