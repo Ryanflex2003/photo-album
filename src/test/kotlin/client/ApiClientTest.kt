@@ -62,7 +62,7 @@ class ApiClientTest {
     }
 
     @Test
-    fun `given user wants a list of available albums return available album Id`() {
+    fun `given user wants a list of available albums return distinct available album Ids`() {
         val mockEngine = MockEngine { request ->
             respond(
                 content = ByteReadChannel(singleResponse),
@@ -74,6 +74,7 @@ class ApiClientTest {
         val apiClient = ApiClient(mockEngine)
         val response = runBlocking { apiClient.getAlbums() }
         assertEquals(albumId, response[0])
+        assertEquals(1, response.size)
     }
 
 }

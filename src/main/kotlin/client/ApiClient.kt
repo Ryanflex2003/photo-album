@@ -43,7 +43,20 @@ class ApiClient (engine: HttpClientEngine = CIO.create()) {
 
     suspend fun getAlbums(): List<Int> {
         photoUrl = getPhotoUrlProperty()
-        return emptyList()
+        val photoList: List<Photo?>
+        val albumIdList: MutableList <Int> = mutableListOf()
+        runBlocking {
+            val photos: ArrayList<Photo?> =
+                client.get("${photoUrl}").body()
+            photoList = photos.toList()
+        }
+
+        photoList.forEach {photo ->
+            if (albumIdList.none { it == photo!!.albumId })
+                albumIdList.add( photo!!.albumId)
+        }
+
+        return albumIdList
     }
 
     private fun getPhotoUrlProperty(): String {
