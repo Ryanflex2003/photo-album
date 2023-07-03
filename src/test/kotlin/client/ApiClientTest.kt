@@ -61,4 +61,19 @@ class ApiClientTest {
         assertEquals(response, emptyList<Photo>())
     }
 
+    @Test
+    fun `given user wants a list of available albums return available album Id`() {
+        val mockEngine = MockEngine { request ->
+            respond(
+                content = ByteReadChannel(singleResponse),
+                status = HttpStatusCode.OK,
+                headers = headersOf(HttpHeaders.ContentType, "application/json")
+            )
+        }
+
+        val apiClient = ApiClient(mockEngine)
+        val response = runBlocking { apiClient.getAlbums() }
+        assertEquals(albumId, response[0])
+    }
+
 }

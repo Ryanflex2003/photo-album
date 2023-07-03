@@ -27,12 +27,11 @@ class ApiClient (engine: HttpClientEngine = CIO.create()) {
         }
     }
 
-    suspend fun getPhotos(albumId: Int): List<Photo?> {
-        var file = File("src/main/resources/application.properties")
-        val properties = Properties()
-        FileInputStream(file).use { properties.load(it) }
-        val photoUrl = properties.getProperty("photoUrl")
+    private var file = File("src/main/resources/application.properties")
+    private var photoUrl = ""
 
+    suspend fun getPhotos(albumId: Int): List<Photo?> {
+        photoUrl = getPhotoUrlProperty()
         val photoList: List<Photo?>
         runBlocking {
             val photos: ArrayList<Photo?> =
@@ -40,5 +39,16 @@ class ApiClient (engine: HttpClientEngine = CIO.create()) {
             photoList = photos.toList()
         }
         return photoList
+    }
+
+    suspend fun getAlbums(): List<Int> {
+        photoUrl = getPhotoUrlProperty()
+        return emptyList()
+    }
+
+    private fun getPhotoUrlProperty(): String {
+        val properties = Properties()
+        FileInputStream(file).use { properties.load(it) }
+        return properties.getProperty("photoUrl")
     }
 }
