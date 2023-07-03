@@ -56,4 +56,19 @@ class PhotoServiceTest {
 
         assertEquals(expectedResponse, result)
     }
+
+    @Test
+    fun `given album ids only distinct album ids are returned`() {
+        val albumList = listOf(1, 2, 3)
+
+        val mockApiClient = mockk<ApiClient>()
+        val photoService = PhotoService(mockApiClient)
+
+        coEvery { mockApiClient.getAlbums() }  returns albumList
+
+        val expected = "1, 2, 3"
+        val result = photoService.getAlbumIds()
+        assertEquals( expected,result)
+
+    }
 }

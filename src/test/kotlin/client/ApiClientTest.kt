@@ -26,6 +26,25 @@ class ApiClientTest {
     ]
     """.trimIndent()
 
+    private val multipleAlbumIdResponse = """
+    [
+    {
+        "albumId": ${albumId},
+        "id": ${id},
+        "title": ${randomTitle},
+        "url": "https://${randomTitle}",
+        "thumbnailUrl": "https://amazing${randomTitle}"
+    },
+    {
+        "albumId": ${albumId},
+        "id": ${id + 1},
+        "title": ${randomTitle},
+        "url": "https://${randomTitle}",
+        "thumbnailUrl": "https://amazing${randomTitle}"
+    }    
+    ]
+    """.trimIndent()
+
     private val emptyResponse = """[]"""
 
     @Test
@@ -65,7 +84,7 @@ class ApiClientTest {
     fun `given user wants a list of available albums return distinct available album Ids`() {
         val mockEngine = MockEngine { request ->
             respond(
-                content = ByteReadChannel(singleResponse),
+                content = ByteReadChannel(multipleAlbumIdResponse),
                 status = HttpStatusCode.OK,
                 headers = headersOf(HttpHeaders.ContentType, "application/json")
             )

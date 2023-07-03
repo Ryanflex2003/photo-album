@@ -16,6 +16,11 @@ class PhotoService(private val apiClient: ApiClient = ApiClient()) {
         return formatRelevantInfo(relevantPairList)
     }
 
+    fun getAlbumIds(): String {
+        val albumIds = runBlocking { apiClient.getAlbums() }
+        return albumIds.joinToString{"$it"}
+    }
+
     private fun getRelevantInfo(photos: List<Photo?>): List<Pair<String, String>> {
         val pairedList: MutableList<Pair<String, String>> = mutableListOf()
         photos.forEach{
