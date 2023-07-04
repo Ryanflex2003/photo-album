@@ -49,7 +49,7 @@ class ApiClientTest {
 
     @Test
     fun `given a valid album id when results present return valid response`() {
-        val mockEngine = MockEngine { request ->
+        val mockEngine = MockEngine {
             respond(
                 content = ByteReadChannel(singleResponse),
                 status = HttpStatusCode.OK,
@@ -67,7 +67,7 @@ class ApiClientTest {
 
     @Test
     fun `given a valid album id when results not present return empty response`() {
-        val mockEngine = MockEngine { request ->
+        val mockEngine = MockEngine {
             respond(
                 content = ByteReadChannel(emptyResponse),
                 status = HttpStatusCode.OK,
@@ -82,7 +82,7 @@ class ApiClientTest {
 
     @Test
     fun `given user wants a list of available albums return distinct available album Ids`() {
-        val mockEngine = MockEngine { request ->
+        val mockEngine = MockEngine {
             respond(
                 content = ByteReadChannel(multipleAlbumIdResponse),
                 status = HttpStatusCode.OK,

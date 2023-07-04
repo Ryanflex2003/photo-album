@@ -5,11 +5,12 @@ import org.gradle.api.tasks.testing.logging.TestLogEvent
 plugins {
     kotlin("jvm") version "1.8.21"
     id("io.ktor.plugin") version "2.3.2"
+    id("jacoco")
     kotlin("plugin.serialization") version "1.7.10"
     application
 }
 
-group = "org.example"
+group = "org.gradle"
 version = "1.0-SNAPSHOT"
 
 repositories {
@@ -44,6 +45,20 @@ tasks.test {
         showExceptions = true
         showStackTraces = true
     }
+
+    finalizedBy(tasks.jacocoTestReport)
+}
+
+tasks.jacocoTestReport {
+    reports {
+        xml.required.set(false)
+        csv.required.set(false)
+        html.outputLocation.set(layout.buildDirectory.dir("jacocoHtml"))
+    }
+}
+
+tasks.jacocoTestReport {
+    dependsOn(tasks.test)
 }
 
 tasks.withType<KotlinCompile> {
@@ -71,9 +86,31 @@ tasks.withType<Test> {
             exceptionFormat = TestExceptionFormat.FULL
         }
     }
-
 }
 
 application {
     mainClass.set("MainKt")
 }
+
+tasks.jacocoTestCoverageVerification {
+    violationRules {
+        rule {
+            limit {
+                minimum = "0.7".toBigDecimal()
+            }
+        }
+
+        rule {
+            isEnabled = false
+            element = "CLASS"
+            includes = listOf("org.gradle.*")
+
+            limit {
+                counter = "LINE"
+                value = "TOTALCOUNT"
+                maximum = "0.3".toBigDecimal()
+            }
+        }
+    }
+}
+
